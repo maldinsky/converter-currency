@@ -1,0 +1,44 @@
+version: "3.1"
+services:
+
+    mysql:
+      image: mysql:5.7
+      container_name: converter-mysql
+      working_dir: /app
+      volumes:
+        - ./app:/app
+      environment:
+        - MYSQL_ROOT_PASSWORD=dbpass-root
+        - MYSQL_DATABASE=dbname
+        - MYSQL_USER=dbuser
+        - MYSQL_PASSWORD=dbpass
+      ports:
+        - "3306:3306"
+
+    webserver:
+      image: nginx:alpine
+      container_name: converter-webserver
+      working_dir: /app
+      volumes:
+          - ./app:/app
+          - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      ports:
+       - "5050:80"
+
+    php-fpm:
+      build: phpdocker/php-fpm
+      container_name: converter-php-fpm
+      working_dir: /app
+      volumes:
+        - ./app:/app
+        - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+
+    phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      links:
+        - mysql
+      environment:
+        PMA_HOST: mysql
+        PMA_PORT: 3306
+      ports:
+        - '5051:80'

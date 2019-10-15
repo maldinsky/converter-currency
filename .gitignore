@@ -1,0 +1,4 @@
+.idea/*
+.idea
+app/vendor
+app/composer.phar
