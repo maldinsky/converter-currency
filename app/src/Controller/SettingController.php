@@ -17,10 +17,11 @@ class SettingController
         $visitor = Container::get('visitor');
         $settings_visitor = $visitor->getSetting();
 
-        $hide_currencies = !empty($settings_visitor['hide_currencies'])? $settings_visitor['hide_currencies']: [];
-        $history_limit = !empty($settings_visitor['history_limit'])? $settings_visitor['history_limit']: 20;
+        $hide_currencies = !empty($settings_visitor['hide_currencies']) ? $settings_visitor['hide_currencies'] : [];
+        $history_limit = !empty($settings_visitor['history_limit']) ? $settings_visitor['history_limit'] : 20;
 
-        $content = Container::get('template_render')->render('settings',
+        $content = Container::get('template_render')->render(
+            'settings',
             [
                 'history_limit' => $history_limit,
                 'hide_currencies' => $hide_currencies,
@@ -35,12 +36,13 @@ class SettingController
         );
     }
 
-    public function saveSetting(){
+    public function saveSetting()
+    {
         $request = Container::get('request');
 
         $setting = [
-            'hide_currencies' => !empty($request->get('hide_currencies'))? $request->get('hide_currencies'): [],
-            'history_limit' => !empty($request->get('history_limit'))? $request->get('history_limit'): 20
+            'hide_currencies' => !empty($request->get('hide_currencies')) ? $request->get('hide_currencies') : [],
+            'history_limit' => !empty($request->get('history_limit')) ? $request->get('history_limit') : 20
         ];
 
         $visitor = Container::get('visitor');

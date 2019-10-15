@@ -9,27 +9,12 @@ class Db
     protected static $instance;
     private $connect;
 
-    private function __construct()
+    private function __construct(PDO $pdo)
     {
-        try {
-            $this->connect = new PDO(
-                "mysql:host=converter-mysql;port=3306;dbname=dbname",
-                "dbuser",
-                "dbpass",
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false,
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-                ]
-            );
-
-        } catch (\Exception $e) {
-            exit('Проблемы с доступом к базе данных');
-        }
+        $this->connect = $pdo;
     }
 
-    public static function getInstance():Db
+    public static function getInstance(): Db
     {
         if (static::$instance === null) {
             self::$instance = new static();
@@ -38,7 +23,7 @@ class Db
         return static::$instance;
     }
 
-    public function getConnect():PDO
+    public function getConnect(): PDO
     {
         return $this->connect;
     }
@@ -81,5 +66,7 @@ class Db
         return $sth;
     }
 
-    private function __clone () {}
+    private function __clone()
+    {
+    }
 }

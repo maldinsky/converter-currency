@@ -16,17 +16,17 @@ class Currency extends Model
         $this->name = $name;
     }
 
-    public function getId():int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getCode():string
+    public function getCode(): string
     {
         return $this->code;
     }
 
-    public function getName():string
+    public function getName(): string
     {
         return $this->name;
     }

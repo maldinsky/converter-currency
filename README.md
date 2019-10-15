@@ -18,10 +18,10 @@ CREATE TABLE `Currency` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `Currency` (`id`, `code`, `name`) VALUES
-(1, 'BYN', 'Бел. рубль'),
-(2, 'RUB', 'Рос. рубль'),
-(3, 'USD', 'Доллар'),
-(4, 'EUR', 'Евро');
+('BYN', 'Бел. рубль'),
+('RUB', 'Рос. рубль'),
+('USD', 'Доллар'),
+('EUR', 'Евро');
 
 
 CREATE TABLE `History` (
@@ -41,7 +41,7 @@ CREATE TABLE `Visitor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `Currency`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`code`);
 
 ALTER TABLE `History`
   ADD PRIMARY KEY (`id`);

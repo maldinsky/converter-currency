@@ -13,7 +13,8 @@ class HistoryController
     {
         $history = (new HistoryVisitor())->getHistory(Container::get('visitor'));
 
-        $content = Container::get('template_render')->render('history',
+        $content = Container::get('template_render')->render(
+            'history',
             [
                 'history' => $history,
             ]

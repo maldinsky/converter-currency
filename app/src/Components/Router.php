@@ -5,6 +5,7 @@ namespace App\Components;
 use App\Controller\HistoryController;
 use App\Controller\MainController;
 use App\Controller\SettingController;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
@@ -17,8 +18,9 @@ class Router
 {
     private $route_collection;
 
-    public function __construct()
+    public function __construct(ContainerInterface $container)
     {
+        $this->container = $container;
         $this->route_collection = new RouteCollection();
 
         $this->route_collection->add('home', new Route('/', ['_controller' => [MainController::class, 'index']]));
@@ -41,13 +43,11 @@ class Router
         $controllerResolver = new ControllerResolver();
         $argumentResolver = new ArgumentResolver();
 
-        $controller = $controllerResolver->getController($request);
-
-        $arguments = $argumentResolver->getArguments($request, $controller);
+//         $controllerResolver->getController($request)
+        $controller = $this->container->get($request->attributes->get('_controller')[0]);
 
         return [
             'controller' => $controller,
-            'arguments' => $arguments
         ];
     }
 }
