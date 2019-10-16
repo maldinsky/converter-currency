@@ -36,18 +36,11 @@ class Router
 
         $matcher = new UrlMatcher($this->route_collection, $context);
 
-        $request->attributes->add($matcher->match($request->getPathInfo()));
-
-        $controllerResolver = new ControllerResolver();
-        $argumentResolver = new ArgumentResolver();
-
-        $controller = $controllerResolver->getController($request);
-
-        $arguments = $argumentResolver->getArguments($request, $controller);
+        $handler = $matcher->match($request->getPathInfo());
 
         return [
-            'controller' => $controller,
-            'arguments' => $arguments
+            'handler' => $handler['_controller'][0],
+            'method' => $handler['_controller'][1]
         ];
     }
 }

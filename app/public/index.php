@@ -1,15 +1,21 @@
 <?php
 
-use App\Components\Container;
 use App\Components\Router;
 use App\Components\TemplateRender;
+use App\Model\Visitor;
 use App\Model\VisitorFactory;
+use Cekta\DI\Container;
+use Cekta\DI\Provider\Autowiring;
+use Cekta\DI\Provider\KeyValue;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
+ini_set('display_errors',1);
+ini_set('error_reporting',2047);
 
 // request
 $request = Request::createFromGlobals();
@@ -29,12 +35,16 @@ try
     $visitor = $visitor_factory->getVisitor($session->getId());
 
     // Формирование контейнера
-    Container::set('request', $request);
-    Container::set('router', $router);
-    Container::set('template_render', new TemplateRender(__DIR__ . '/../templates'));
-    Container::set('visitor', $visitor);
+    $providers[] = new KeyValue([
+        TemplateRender::class => new TemplateRender(__DIR__ . '/../templates'),
+        Visitor::class => $visitor,
+        Request::class => $request
+    ]);
 
-    $response = call_user_func_array($action['controller'], $action['arguments']);
+    $providers[] = new Autowiring();
+    $container = new Container(...$providers);
+
+    $response = $container->get($action['handler'])->{$action['method']}();
 }
 catch (ResourceNotFoundException $e)
 {
