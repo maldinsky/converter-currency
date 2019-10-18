@@ -13,14 +13,13 @@ class CurrencyMapper
         $this->db = $db;
     }
 
-    public function getCurrencies(array $filter = []):array
+    public function getCurrencies(array $filter = []): array
     {
         $result = [];
 
         $currencies = $this->db->select('Currency')->fetchAll();
 
         foreach($currencies as $currency){
-
             if(!empty($filter['hide_currencies']) && in_array($currency['id'], $filter['hide_currencies']))
                 continue;
 

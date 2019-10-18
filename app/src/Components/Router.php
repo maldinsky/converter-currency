@@ -10,31 +10,43 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\HttpKernel\Controller\ControllerResolver;
-use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 
 class Router
 {
-    private $route_collection;
+    private $routeCollection;
 
     public function __construct()
     {
-        $this->route_collection = new RouteCollection();
+        $this->routeCollection = new RouteCollection();
 
-        $this->route_collection->add('home', new Route('/', ['_controller' => [MainController::class, 'index']]));
-        $this->route_collection->add('settings', new Route('/settings', ['_controller' => [SettingController::class, 'index']]));
-        $this->route_collection->add('settings_save', new Route('/settings/save', ['_controller' => [SettingController::class, 'saveSetting']]));
-        $this->route_collection->add('history', new Route('/history', ['_controller' => [HistoryController::class, 'index']]));
-        $this->route_collection->add('converter', new Route('/converter', ['_controller' => [MainController::class, 'converter']]));
+        $this->routeCollection->add(
+            'home',
+            new Route('/', ['_controller' => [MainController::class, 'index']])
+        );
+        $this->routeCollection->add(
+            'settings',
+            new Route('/settings', ['_controller' => [SettingController::class, 'index']])
+        );
+        $this->routeCollection->add(
+            'settings_save',
+            new Route('/settings/save', ['_controller' => [SettingController::class, 'saveSetting']])
+        );
+        $this->routeCollection->add(
+            'history',
+            new Route('/history', ['_controller' => [HistoryController::class, 'index']])
+        );
+        $this->routeCollection->add(
+            'converter',
+            new Route('/converter', ['_controller' => [MainController::class, 'converter']])
+        );
     }
 
-    public function match(Request $request)
+    public function match(Request $request): array
     {
         $context = new RequestContext();
-
         $context->fromRequest($request);
 
-        $matcher = new UrlMatcher($this->route_collection, $context);
+        $matcher = new UrlMatcher($this->routeCollection, $context);
 
         $handler = $matcher->match($request->getPathInfo());
 

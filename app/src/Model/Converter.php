@@ -21,11 +21,15 @@ class Converter
             $client = new Client();
             $response = $client->request('GET', 'http://apilayer.net/api/live?access_key=9eeee3614b908e92a8651f54246c439e&currencies=USD,' . $to . ',' . $from);
 
-            $request_result = json_decode($response->getBody(), true);
+            $requestResult = json_decode($response->getBody(), true);
 
-            if ($request_result['success']) {
-                if (!empty($request_result['quotes']['USD' . $to]) && !empty($request_result['quotes']['USD' . $from]) && !empty($request_result['quotes']['USDUSD'])) {
-                    $this->result = ($amount * $request_result['quotes']['USD' . $to]) / $request_result['quotes']['USD' . $from];
+            if ($requestResult['success']) {
+                if (
+                    !empty($requestResult['quotes']['USD' . $to])
+                    && !empty($requestResult['quotes']['USD' . $from]) 
+                    && !empty($requestResult['quotes']['USDUSD'])
+                ) {
+                    $this->result = ($amount * $requestResult['quotes']['USD' . $to]) / $requestResult['quotes']['USD' . $from];
                 }
             } else {
                 $this->result = 'Пока к сожалению конвертация валют невозможна. Попробуйте позже';

@@ -13,7 +13,7 @@ class Db
         $this->connect = $pdo;
     }
 
-    public function getConnect():PDO
+    public function getConnect(): PDO
     {
         return $this->connect;
     }

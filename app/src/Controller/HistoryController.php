@@ -4,18 +4,16 @@ namespace App\Controller;
 
 use App\Components\TemplateRender;
 use App\Model\HistoryVisitor;
-use App\Model\Visitor;
 use Symfony\Component\HttpFoundation\Response;
 
 class HistoryController
 {
-
-    private $template_render;
+    private $templateRender;
     private $history;
 
-    public function __construct(TemplateRender $template_render, HistoryVisitor $history)
+    public function __construct(TemplateRender $templateRender, HistoryVisitor $history)
     {
-        $this->template_render = $template_render;
+        $this->templateRender = $templateRender;
         $this->history = $history;
     }
 
@@ -23,11 +21,9 @@ class HistoryController
     {
         $history = $this->history->getHistory();
 
-        $content = $this->template_render->render('history',
-            [
-                'history' => $history,
-            ]
-        );
+        $content = $this->templateRender->render('history', [
+            'history' => $history,
+        ]);
 
         return new Response(
             $content,

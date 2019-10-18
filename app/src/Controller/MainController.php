@@ -13,38 +13,39 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MainController
 {
-    private $template_render;
+    private $templateRender;
     private $visitor;
-    private $currency_mapper;
+    private $currencyMapper;
     private $history;
 
-    public function __construct(TemplateRender $template_render, CurrencyMapper $currency_mapper, VisitorMapper $visitor_mapper, HistoryVisitor $history)
-    {
-        $this->template_render = $template_render;
-        $this->currency_mapper = $currency_mapper;
-        $this->visitor = $visitor_mapper->getVisitor();
+    public function __construct(
+        TemplateRender $templateRender,
+        CurrencyMapper $currencyMapper,
+        VisitorMapper $visitorMapper,
+        HistoryVisitor $history
+    ) {
+        $this->templateRender = $templateRender;
+        $this->currencyMapper = $currencyMapper;
+        $this->visitor = $visitorMapper->getVisitor();
         $this->history = $history;
     }
 
     public function index()
     {
-        $visitor_setting = $this->visitor->getSetting();
+        $visitorSetting = $this->visitor->getSetting();
 
         $filter = [];
-
-        if(!empty($visitor_setting['hide_currencies'])){
+        if (!empty($visitorSetting['hide_currencies'])) {
             $filter = [
-                'hide_currencies' => $visitor_setting['hide_currencies']
+                'hide_currencies' => $visitorSetting['hide_currencies']
             ];
         }
 
-        $currencies = $this->currency_mapper->getCurrencies($filter);
+        $currencies = $this->currencyMapper->getCurrencies($filter);
 
-        $content = $this->template_render->render('main',
-            [
-                'currencies' => $currencies,
-            ]
-        );
+        $content = $this->templateRender->render('main', [
+            'currencies' => $currencies,
+        ]);
 
         return new Response(
             $content,
@@ -53,8 +54,8 @@ class MainController
         );
     }
 
-    public function converter(){
-
+    public function converter()
+    {
         $request = Request::createFromGlobals();;
 
         $converter = new Converter($request->get('to'), $request->get('from'), $request->get('amount'));

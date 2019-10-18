@@ -18,7 +18,7 @@ class TemplateRender
         $this->folder = rtrim($folder, '/');
     }
 
-    public function render($suggestions, $variables = array())
+    public function render($suggestions, $variables = [])
     {
         $template = $this->findTemplate($suggestions);
         $output = '';

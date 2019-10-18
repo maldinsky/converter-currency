@@ -9,19 +9,19 @@ class VisitorMapper
     private $db;
     private $code;
 
-    public function __construct(Db $db, string $code_visitor)
+    public function __construct(Db $db, string $codeVisitor)
     {
         $this->db = $db;
-        $this->code = $code_visitor;
+        $this->code = $codeVisitor;
     }
 
-    public function getVisitor():Visitor
+    public function getVisitor(): Visitor
     {
         $result = $this->db->select('Visitor', [
             'session_code' => $this->code
         ])->fetch();
 
-        if(!$result){
+        if (!$result) {
             $id = $this->db->insert('Visitor', [
                 'session_code' => $this->code,
                 'setting' => ''

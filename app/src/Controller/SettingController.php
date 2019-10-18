@@ -11,22 +11,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SettingController
 {
-    private $template_render;
+    private $templateRender;
     private $visitor;
-    private $currency_mapper;
-    private $visitor_mapper;
+    private $currencyMapper;
+    private $visitorMapper;
 
-    public function __construct(TemplateRender $template_render, VisitorMapper $visitor_mapper, CurrencyMapper $currency_mapper)
-    {
-        $this->template_render = $template_render;
-        $this->visitor_mapper = $visitor_mapper;
-        $this->visitor = $visitor_mapper->getVisitor();
-        $this->currency_mapper = $currency_mapper;
+    public function __construct(
+        TemplateRender $templateRender,
+        VisitorMapper $visitorMapper,
+        CurrencyMapper $currencyMapper
+    ) {
+        $this->templateRender = $templateRender;
+        $this->visitorMapper = $visitorMapper;
+        $this->visitor = $visitorMapper->getVisitor();
+        $this->currencyMapper = $currencyMapper;
     }
 
     public function index()
     {
-        $currencies = $this->currency_mapper->getCurrencies();
+        $currencies = $this->currencyMapper->getCurrencies();
 
         $visitor = $this->visitor;
         $settings_visitor = $visitor->getSetting();
@@ -34,13 +37,11 @@ class SettingController
         $hide_currencies = !empty($settings_visitor['hide_currencies'])? $settings_visitor['hide_currencies']: [];
         $history_limit = !empty($settings_visitor['history_limit'])? $settings_visitor['history_limit']: 20;
 
-        $content = $this->template_render->render('settings',
-            [
-                'history_limit' => $history_limit,
-                'hide_currencies' => $hide_currencies,
-                'currencies' => $currencies
-            ]
-        );
+        $content = $this->templateRender->render('settings', [
+            'history_limit' => $history_limit,
+            'hide_currencies' => $hide_currencies,
+            'currencies' => $currencies
+        ]);
 
         return new Response(
             $content,
@@ -49,7 +50,8 @@ class SettingController
         );
     }
 
-    public function saveSetting(){
+    public function saveSetting()
+    {
         $request = Request::createFromGlobals();
 
         $setting = [
@@ -57,7 +59,7 @@ class SettingController
             'history_limit' => !empty($request->get('history_limit'))? $request->get('history_limit'): 20
         ];
 
-        $this->visitor_mapper->updateVisitorSetting($setting);
+        $this->visitorMapper->updateVisitorSetting($setting);
 
         return new JsonResponse();
     }

@@ -9,13 +9,14 @@ class HistoryVisitor
     private $db;
     private $visitor;
 
-    public function __construct(Db $db, VisitorMapper $visitor_mapper)
+    public function __construct(Db $db, VisitorMapper $visitorMapper)
     {
         $this->db = $db;
-        $this->visitor = $visitor_mapper->getVisitor();
+        $this->visitor = $visitorMapper->getVisitor();
     }
 
-    public function addHistory(Converter $converter){
+    public function addHistory(Converter $converter)
+    {
         $this->db->insert('History',[
             'id_visitor' => $this->visitor->getId(),
             'currency_to' => $converter->getCurrencyTo(),
@@ -25,8 +26,8 @@ class HistoryVisitor
         ]);
     }
 
-    public function getHistory(){
-
+    public function getHistory()
+    {
         $setting = $this->visitor->getSetting();
 
         $limit = (!empty($setting['history_limit']))? (int)$setting['history_limit'] :20;
