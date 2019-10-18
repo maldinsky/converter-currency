@@ -6,36 +6,11 @@ use PDO;
 
 class Db
 {
-    protected static $instance;
     private $connect;
 
-    private function __construct()
+    public function __construct(PDO $pdo)
     {
-        try {
-            $this->connect = new PDO(
-                "mysql:host=converter-mysql;port=3306;dbname=dbname",
-                "dbuser",
-                "dbpass",
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false,
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-                ]
-            );
-
-        } catch (\Exception $e) {
-            exit('Проблемы с доступом к базе данных');
-        }
-    }
-
-    public static function getInstance():Db
-    {
-        if (static::$instance === null) {
-            self::$instance = new static();
-        }
-
-        return static::$instance;
+        $this->connect = $pdo;
     }
 
     public function getConnect():PDO
@@ -80,6 +55,4 @@ class Db
         $sth->execute($params);
         return $sth;
     }
-
-    private function __clone () {}
 }

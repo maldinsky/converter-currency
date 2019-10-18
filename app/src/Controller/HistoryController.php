@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 
-use App\Components\Container;
 use App\Components\TemplateRender;
-use App\Model\CurrencyFactory;
 use App\Model\HistoryVisitor;
 use App\Model\Visitor;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,17 +11,17 @@ class HistoryController
 {
 
     private $template_render;
-    private $visitor;
+    private $history;
 
-    public function __construct(TemplateRender $template_render, Visitor $visitor)
+    public function __construct(TemplateRender $template_render, HistoryVisitor $history)
     {
         $this->template_render = $template_render;
-        $this->visitor = $visitor;
+        $this->history = $history;
     }
 
     public function index()
     {
-        $history = (new HistoryVisitor())->getHistory($this->visitor);
+        $history = $this->history->getHistory();
 
         $content = $this->template_render->render('history',
             [

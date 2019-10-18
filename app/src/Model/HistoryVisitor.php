@@ -2,11 +2,22 @@
 
 namespace App\Model;
 
-class HistoryVisitor extends Model
+use App\Components\Db;
+
+class HistoryVisitor
 {
-    public function addHistory(Visitor $visitor, Converter $converter){
+    private $db;
+    private $visitor;
+
+    public function __construct(Db $db, VisitorMapper $visitor_mapper)
+    {
+        $this->db = $db;
+        $this->visitor = $visitor_mapper->getVisitor();
+    }
+
+    public function addHistory(Converter $converter){
         $this->db->insert('History',[
-            'id_visitor' => $visitor->getId(),
+            'id_visitor' => $this->visitor->getId(),
             'currency_to' => $converter->getCurrencyTo(),
             'currency_from' => $converter->getCurrencyFrom(),
             'amount' => $converter->getAmount(),
@@ -14,14 +25,14 @@ class HistoryVisitor extends Model
         ]);
     }
 
-    public function getHistory(Visitor $visitor){
+    public function getHistory(){
 
-        $setting = $visitor->getSetting();
+        $setting = $this->visitor->getSetting();
 
         $limit = (!empty($setting['history_limit']))? (int)$setting['history_limit'] :20;
 
         $history = $this->db->select('History', [
-            'id_visitor' => $visitor->getId()
+            'id_visitor' => $this->visitor->getId()
         ])->fetchAll();
 
         return $history;

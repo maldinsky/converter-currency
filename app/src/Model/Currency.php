@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class Currency extends Model
+class Currency
 {
     protected $id;
     protected $code;
@@ -10,7 +10,6 @@ class Currency extends Model
 
     public function __construct(int $id, string $code, string $name)
     {
-        parent::__construct();
         $this->id = $id;
         $this->code = $code;
         $this->name = $name;

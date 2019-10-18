@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Components\TemplateRender;
 use App\Model\Converter;
-use App\Model\CurrencyFactory;
+use App\Model\CurrencyMapper;
 use App\Model\HistoryVisitor;
-use App\Model\Visitor;
+use App\Model\VisitorMapper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,16 +15,19 @@ class MainController
 {
     private $template_render;
     private $visitor;
+    private $currency_mapper;
+    private $history;
 
-    public function __construct(TemplateRender $template_render, Visitor $visitor)
+    public function __construct(TemplateRender $template_render, CurrencyMapper $currency_mapper, VisitorMapper $visitor_mapper, HistoryVisitor $history)
     {
-        $this->visitor = $visitor;
         $this->template_render = $template_render;
+        $this->currency_mapper = $currency_mapper;
+        $this->visitor = $visitor_mapper->getVisitor();
+        $this->history = $history;
     }
 
     public function index()
     {
-        $currency_factory = new CurrencyFactory();
         $visitor_setting = $this->visitor->getSetting();
 
         $filter = [];
@@ -35,7 +38,7 @@ class MainController
             ];
         }
 
-        $currencies = $currency_factory->getCurrencies($filter);
+        $currencies = $this->currency_mapper->getCurrencies($filter);
 
         $content = $this->template_render->render('main',
             [
@@ -57,8 +60,7 @@ class MainController
         $converter = new Converter($request->get('to'), $request->get('from'), $request->get('amount'));
         $result = $converter->getResult();
 
-        $history = new HistoryVisitor();
-        $history->addHistory($this->visitor, $converter);
+        $this->history->addHistory($converter);
 
         return new JsonResponse(
             $result

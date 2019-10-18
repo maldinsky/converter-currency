@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Components\TemplateRender;
-use App\Model\CurrencyFactory;
-use App\Model\Visitor;
+use App\Model\CurrencyMapper;
+use App\Model\VisitorMapper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,17 +13,20 @@ class SettingController
 {
     private $template_render;
     private $visitor;
+    private $currency_mapper;
+    private $visitor_mapper;
 
-    public function __construct(TemplateRender $template_render, Visitor $visitor)
+    public function __construct(TemplateRender $template_render, VisitorMapper $visitor_mapper, CurrencyMapper $currency_mapper)
     {
         $this->template_render = $template_render;
-        $this->visitor = $visitor;
+        $this->visitor_mapper = $visitor_mapper;
+        $this->visitor = $visitor_mapper->getVisitor();
+        $this->currency_mapper = $currency_mapper;
     }
 
     public function index()
     {
-        $currency_factory = new CurrencyFactory();
-        $currencies = $currency_factory->getCurrencies();
+        $currencies = $this->currency_mapper->getCurrencies();
 
         $visitor = $this->visitor;
         $settings_visitor = $visitor->getSetting();
@@ -54,7 +57,7 @@ class SettingController
             'history_limit' => !empty($request->get('history_limit'))? $request->get('history_limit'): 20
         ];
 
-        $this->visitor->updateSetting($setting);
+        $this->visitor_mapper->updateVisitorSetting($setting);
 
         return new JsonResponse();
     }

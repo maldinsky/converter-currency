@@ -4,7 +4,7 @@ namespace App\Model;
 
 use GuzzleHttp\Client;
 
-class Converter extends Model
+class Converter
 {
     private $to;
     private $from;
@@ -13,7 +13,6 @@ class Converter extends Model
 
     public function __construct(string $to, string $from, $amount)
     {
-        parent::__construct();
         $this->to = $to;
         $this->from = $from;
         $this->amount = $amount;

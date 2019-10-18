@@ -3,10 +3,11 @@
 use App\Components\Router;
 use App\Components\TemplateRender;
 use App\Model\Visitor;
-use App\Model\VisitorFactory;
+use App\Model\VisitorMapper;
 use Cekta\DI\Container;
 use Cekta\DI\Provider\Autowiring;
 use Cekta\DI\Provider\KeyValue;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -30,15 +31,22 @@ try
     $router = new Router();
     $action = $router->match($request);
 
-    // Создаем или проверяем существование пользователя
-    $visitor_factory = new VisitorFactory();
-    $visitor = $visitor_factory->getVisitor($session->getId());
-
     // Формирование контейнера
     $providers[] = new KeyValue([
         TemplateRender::class => new TemplateRender(__DIR__ . '/../templates'),
-        Visitor::class => $visitor,
-        Request::class => $request
+        Request::class => $request,
+        PDO::class => new PDO(
+                "mysql:host=converter-mysql;port=3306;dbname=dbname",
+                "dbuser",
+                "dbpass",
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+                ]
+            ),
+        'code_visitor' => $session->getId(),
     ]);
 
     $providers[] = new Autowiring();

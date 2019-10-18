@@ -5,7 +5,8 @@
         "symfony/http-kernel": "^4.3",
         "guzzlehttp/guzzle": "^6.3",
         "ext-pdo": "*",
-        "cekta/di": "^0.1.0"
+        "cekta/di": "^0.1.0",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {

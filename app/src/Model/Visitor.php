@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class Visitor extends Model
+class Visitor
 {
     private $id;
     private $code;
@@ -10,7 +10,6 @@ class Visitor extends Model
 
     public function __construct(int $id, string $code, string $setting = '')
     {
-        parent::__construct();
         $this->id = $id;
         $this->code = $code;
         $this->setting = json_decode($setting, true);
@@ -29,16 +28,5 @@ class Visitor extends Model
     public function getSetting()
     {
         return $this->setting;
-    }
-
-    public function updateSetting(array $setting)
-    {
-        $this->setting = $setting;
-
-        $this->db->update('Visitor', [
-            'setting' => json_encode($setting)
-        ], [
-            'id' => $this->getId()
-        ]);
     }
 }

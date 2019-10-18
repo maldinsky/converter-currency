@@ -2,10 +2,17 @@
 
 namespace App\Model;
 
-use App\Components\Container;
+use App\Components\Db;
 
-class CurrencyFactory extends Model
+class CurrencyMapper
 {
+    private $db;
+
+    public function __construct(Db $db)
+    {
+        $this->db = $db;
+    }
+
     public function getCurrencies(array $filter = []):array
     {
         $result = [];
