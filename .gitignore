@@ -2,3 +2,4 @@
 .idea
 app/vendor
 app/composer.phar
+.env

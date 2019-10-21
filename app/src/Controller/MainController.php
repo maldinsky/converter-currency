@@ -17,17 +17,20 @@ class MainController
     private $visitor;
     private $currencyMapper;
     private $history;
+    private $apiKeyConverter;
 
     public function __construct(
         TemplateRender $templateRender,
         CurrencyMapper $currencyMapper,
         VisitorMapper $visitorMapper,
-        HistoryVisitor $history
+        HistoryVisitor $history,
+        string $apiKeyConverter
     ) {
         $this->templateRender = $templateRender;
         $this->currencyMapper = $currencyMapper;
         $this->visitor = $visitorMapper->getVisitor();
         $this->history = $history;
+        $this->apiKeyConverter = $apiKeyConverter;
     }
 
     public function index()
@@ -58,7 +61,7 @@ class MainController
     {
         $request = Request::createFromGlobals();;
 
-        $converter = new Converter($request->get('to'), $request->get('from'), $request->get('amount'));
+        $converter = new Converter($this->apiKeyConverter, $request->get('to'), $request->get('from'), $request->get('amount'));
         $result = $converter->getResult();
 
         $this->history->addHistory($converter);

@@ -6,7 +6,8 @@
         "guzzlehttp/guzzle": "^6.3",
         "ext-pdo": "*",
         "cekta/di": "^0.1.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "vlucas/phpdotenv": "^3.6"
     },
     "autoload": {
         "psr-4": {

@@ -10,16 +10,18 @@ class Converter
     private $from;
     private $amount;
     private $result;
+    private $apiKeyConverter;
 
-    public function __construct(string $to, string $from, $amount)
+    public function __construct(string $apiKeyConverter, string $to, string $from, $amount)
     {
         $this->to = $to;
         $this->from = $from;
         $this->amount = $amount;
+        $this->apiKeyConverter = $apiKeyConverter;
 
         try {
             $client = new Client();
-            $response = $client->request('GET', 'http://apilayer.net/api/live?access_key=9eeee3614b908e92a8651f54246c439e&currencies=USD,' . $to . ',' . $from);
+            $response = $client->request('GET', 'http://apilayer.net/api/live?access_key=' . $this->apiKeyConverter .'&currencies=USD,' . $to . ',' . $from);
 
             $requestResult = json_decode($response->getBody(), true);
 
