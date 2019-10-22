@@ -34,8 +34,8 @@ class SettingController
         $visitor = $this->visitor;
         $settings_visitor = $visitor->getSetting();
 
-        $hide_currencies = !empty($settings_visitor['hide_currencies'])? $settings_visitor['hide_currencies']: [];
-        $history_limit = !empty($settings_visitor['history_limit'])? $settings_visitor['history_limit']: 20;
+        $hide_currencies = !empty($settings_visitor['hide_currencies']) ? $settings_visitor['hide_currencies'] : [];
+        $history_limit = !empty($settings_visitor['history_limit']) ? $settings_visitor['history_limit'] : 20;
 
         $content = $this->templateRender->render('settings', [
             'history_limit' => $history_limit,
@@ -55,8 +55,8 @@ class SettingController
         $request = Request::createFromGlobals();
 
         $setting = [
-            'hide_currencies' => !empty($request->get('hide_currencies'))? $request->get('hide_currencies'): [],
-            'history_limit' => !empty($request->get('history_limit'))? $request->get('history_limit'): 20
+            'hide_currencies' => !empty($request->get('hide_currencies')) ? $request->get('hide_currencies') : [],
+            'history_limit' => !empty($request->get('history_limit')) ? $request->get('history_limit') : 20
         ];
 
         $this->visitorMapper->updateVisitorSetting($setting);

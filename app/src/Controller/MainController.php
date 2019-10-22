@@ -59,9 +59,15 @@ class MainController
 
     public function converter()
     {
-        $request = Request::createFromGlobals();;
+        $request = Request::createFromGlobals();
 
-        $converter = new Converter($this->apiKeyConverter, $request->get('to'), $request->get('from'), $request->get('amount'));
+        $converter = new Converter(
+            $this->apiKeyConverter,
+            $request->get('to'),
+            $request->get('from'),
+            $request->get('amount')
+        );
+
         $result = $converter->getResult();
 
         $this->history->addHistory($converter);

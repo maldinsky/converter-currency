@@ -19,7 +19,7 @@ class CurrencyMapper
 
         $currencies = $this->db->select('Currency')->fetchAll();
 
-        foreach($currencies as $currency){
+        foreach ($currencies as $currency) {
             if(!empty($filter['hide_currencies']) && in_array($currency['code'], $filter['hide_currencies']))
                 continue;
 

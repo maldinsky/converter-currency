@@ -21,7 +21,7 @@ class Converter
 
         try {
             $client = new Client();
-            $response = $client->request('GET', 'http://apilayer.net/api/live?access_key=' . $this->apiKeyConverter .'&currencies=USD,' . $to . ',' . $from);
+            $response = $client->request('GET', 'http://apilayer.net/api/live?access_key=' . $this->apiKeyConverter . '&currencies=USD,' . $to . ',' . $from);
 
             $requestResult = json_decode($response->getBody(), true);
 

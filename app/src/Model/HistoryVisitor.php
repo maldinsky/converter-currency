@@ -17,7 +17,7 @@ class HistoryVisitor
 
     public function addHistory(Converter $converter)
     {
-        $this->db->insert('History',[
+        $this->db->insert('History', [
             'id_visitor' => $this->visitor->getId(),
             'currency_to' => $converter->getCurrencyTo(),
             'currency_from' => $converter->getCurrencyFrom(),
@@ -30,7 +30,7 @@ class HistoryVisitor
     {
         $setting = $this->visitor->getSetting();
 
-        $limit = (!empty($setting['history_limit']))? (int)$setting['history_limit'] :20;
+        $limit = (!empty($setting['history_limit'])) ? (int)$setting['history_limit'] : 20;
 
         $history = $this->db->select('History', [
             'id_visitor' => $this->visitor->getId()
