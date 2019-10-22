@@ -54,7 +54,7 @@
                         <td><?= $currency->getCode(); ?></td>
                         <td>
                             <div class="form-check">
-                                <input <?= (in_array($currency->getId(), $hide_currencies))? 'checked': ''; ?> class="form-check-input position-static" type="checkbox" name="hide_currencies[]" value="<?= $currency->getId(); ?>">
+                                <input <?= (in_array($currency->getCode(), $hide_currencies))? 'checked': ''; ?> class="form-check-input position-static" type="checkbox" name="hide_currencies[]" value="<?= $currency->getCode(); ?>">
                             </div>
                         </td>
                     </tr>

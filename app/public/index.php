@@ -13,9 +13,6 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-ini_set('display_errors',1);
-ini_set('error_reporting',2047);
-
 $dotenv = Dotenv::create(__DIR__ . '/../');
 $dotenv->load();
 $dotenv->required(['DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD']);
