@@ -3,37 +3,30 @@
 namespace App\Controller;
 
 use App\Components\TemplateRender;
-use App\Model\Converter;
 use App\Model\CurrencyMapper;
-use App\Model\HistoryVisitor;
 use App\Model\VisitorMapper;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 
-class MainController
+class MainController implements RequestHandlerInterface
 {
     private $templateRender;
     private $visitor;
     private $currencyMapper;
-    private $history;
-    private $apiKeyConverter;
 
     public function __construct(
         TemplateRender $templateRender,
         CurrencyMapper $currencyMapper,
-        VisitorMapper $visitorMapper,
-        HistoryVisitor $history,
-        string $apiKeyConverter
+        VisitorMapper $visitorMapper
     ) {
         $this->templateRender = $templateRender;
         $this->currencyMapper = $currencyMapper;
         $this->visitor = $visitorMapper->getVisitor();
-        $this->history = $history;
-        $this->apiKeyConverter = $apiKeyConverter;
     }
 
-    public function index()
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $visitorSetting = $this->visitor->getSetting();
 
@@ -50,30 +43,6 @@ class MainController
             'currencies' => $currencies,
         ]);
 
-        return new Response(
-            $content,
-            Response::HTTP_OK,
-            ['content-type' => 'text/html']
-        );
-    }
-
-    public function converter()
-    {
-        $request = Request::createFromGlobals();
-
-        $converter = new Converter(
-            $this->apiKeyConverter,
-            $request->get('to'),
-            $request->get('from'),
-            $request->get('amount')
-        );
-
-        $result = $converter->getResult();
-
-        $this->history->addHistory($converter);
-
-        return new JsonResponse(
-            $result
-        );
+        return new HtmlResponse($content);
     }
 }

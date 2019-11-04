@@ -2,57 +2,49 @@
 
 namespace App\Components;
 
+use App\Controller\ConverterController;
 use App\Controller\HistoryController;
 use App\Controller\MainController;
 use App\Controller\SettingController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
+use App\Controller\SettingSaveController;
+use FastRoute\Dispatcher;
+use FastRoute\RouteCollector;
+use Zend\Diactoros\ServerRequest;
+use function FastRoute\simpleDispatcher;
 
 class Router
 {
-    private $routeCollection;
+    private $dispatcher;
 
     public function __construct()
     {
-        $this->routeCollection = new RouteCollection();
-
-        $this->routeCollection->add(
-            'home',
-            new Route('/', ['_controller' => [MainController::class, 'index']])
-        );
-        $this->routeCollection->add(
-            'settings',
-            new Route('/settings', ['_controller' => [SettingController::class, 'index']])
-        );
-        $this->routeCollection->add(
-            'settings_save',
-            new Route('/settings/save', ['_controller' => [SettingController::class, 'saveSetting']])
-        );
-        $this->routeCollection->add(
-            'history',
-            new Route('/history', ['_controller' => [HistoryController::class, 'index']])
-        );
-        $this->routeCollection->add(
-            'converter',
-            new Route('/converter', ['_controller' => [MainController::class, 'converter']])
-        );
+        $this->dispatcher = simpleDispatcher(function(RouteCollector $r) {
+            $r->addRoute('GET', '/', MainController::class);
+            $r->addRoute('GET', '/settings', SettingController::class);
+            $r->addRoute('GET', '/history', HistoryController::class);
+            $r->addRoute('POST', '/converter', ConverterController::class);
+            $r->addRoute('POST', '/settings/save', SettingSaveController::class);
+        });
     }
 
-    public function match(Request $request): array
+    public function match(ServerRequest $request): array
     {
-        $context = new RequestContext();
-        $context->fromRequest($request);
+        $httpMethod = $request->getMethod();
+        $uri = $request->getUri()->getPath();
 
-        $matcher = new UrlMatcher($this->routeCollection, $context);
+        $routeInfo = $this->dispatcher->dispatch($httpMethod, $uri);
 
-        $handler = $matcher->match($request->getPathInfo());
+        switch ($routeInfo[0]) {
+            case Dispatcher::NOT_FOUND:
+                break;
+            case Dispatcher::FOUND:
+                $handler = $routeInfo[1];
+                break;
+        }
 
         return [
-            'handler' => $handler['_controller'][0],
-            'method' => $handler['_controller'][1]
+            'handler' => $handler
         ];
     }
 }
+

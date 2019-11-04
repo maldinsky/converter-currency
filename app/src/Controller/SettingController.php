@@ -5,11 +5,12 @@ namespace App\Controller;
 use App\Components\TemplateRender;
 use App\Model\CurrencyMapper;
 use App\Model\VisitorMapper;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 
-class SettingController
+class SettingController implements RequestHandlerInterface
 {
     private $templateRender;
     private $visitor;
@@ -27,7 +28,7 @@ class SettingController
         $this->currencyMapper = $currencyMapper;
     }
 
-    public function index()
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $currencies = $this->currencyMapper->getCurrencies();
 
@@ -43,24 +44,6 @@ class SettingController
             'currencies' => $currencies
         ]);
 
-        return new Response(
-            $content,
-            Response::HTTP_OK,
-            ['content-type' => 'text/html']
-        );
-    }
-
-    public function saveSetting()
-    {
-        $request = Request::createFromGlobals();
-
-        $setting = [
-            'hide_currencies' => !empty($request->get('hide_currencies')) ? $request->get('hide_currencies') : [],
-            'history_limit' => !empty($request->get('history_limit')) ? $request->get('history_limit') : 20
-        ];
-
-        $this->visitorMapper->updateVisitorSetting($setting);
-
-        return new JsonResponse();
+        return new HtmlResponse($content);
     }
 }

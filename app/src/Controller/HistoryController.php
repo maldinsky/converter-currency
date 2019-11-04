@@ -4,9 +4,12 @@ namespace App\Controller;
 
 use App\Components\TemplateRender;
 use App\Model\HistoryVisitor;
-use Symfony\Component\HttpFoundation\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 
-class HistoryController
+class HistoryController implements RequestHandlerInterface
 {
     private $templateRender;
     private $history;
@@ -17,7 +20,7 @@ class HistoryController
         $this->history = $history;
     }
 
-    public function index()
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $history = $this->history->getHistory();
 
@@ -25,10 +28,6 @@ class HistoryController
             'history' => $history,
         ]);
 
-        return new Response(
-            $content,
-            Response::HTTP_OK,
-            ['content-type' => 'text/html']
-        );
+        return new HtmlResponse($content);
     }
 }

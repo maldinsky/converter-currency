@@ -32,28 +32,37 @@
 </header>
 <main class="content">
     <div class="container">
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">Из</th>
-                <th scope="col">В</th>
-                <th scope="col">Сумма</th>
-                <th scope="col">Результат</th>
-                <th scope="col">Дата</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($history as $history_item) { ?>
+        <form id="setting-form" action="/settings/save" method="post">
+            <div class="form-group row my-4">
+                <label class="col-md-6 col-form-label" for="history-limit">Количество записей в истории</label>
+                <div class="col-md-6">
+                    <input id="history-limit" class="form-control" type="text" name="history_limit" placeholder="Количество записей" value="{{ history_limit }}">
+                </div>
+            </div>
+            <table class="table">
+                <thead>
                 <tr>
-                    <td><?= $history_item['currency_from']; ?></td>
-                    <td><?= $history_item['currency_to']; ?></td>
-                    <td><?= $history_item['amount']; ?></td>
-                    <td><?= $history_item['result']; ?></td>
-                    <td><?= $history_item['date']; ?></td>
+                    <th scope="col">Название</th>
+                    <th scope="col">Код</th>
+                    <th scope="col">Скрыть</th>
                 </tr>
-            <?php } ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for currency in currencies %}
+                    <tr>
+                        <td>{{ currency.getName }}</td>
+                        <td>{{ currency.getCode }}</td>
+                        <td>
+                            <div class="form-check">
+                                <input {{ currency.getCode in hide_currencies ? 'checked' : '' }} class="form-check-input position-static" type="checkbox" name="hide_currencies[]" value="{{ currency.getCode }}">
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a href="javascript:void(0);" class="btn btn-primary btn-save-setting">Сохранить</a>
+        </form>
     </div>
 </main>
 <footer>
@@ -68,5 +77,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+<script src="js/common.js"></script>
 </body>
 </html>

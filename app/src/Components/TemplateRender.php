@@ -2,56 +2,22 @@
 
 namespace App\Components;
 
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+
 class TemplateRender
 {
     public $folder;
+    private $twig;
 
     public function __construct($folder = null)
     {
-        if ($folder) {
-            $this->setFolder($folder);
-        }
+        $loader = new FilesystemLoader($folder);
+        $this->twig = new Environment($loader);
     }
 
-    public function setFolder($folder)
+    public function render(string $suggestions, array $variables = []): string
     {
-        $this->folder = rtrim($folder, '/');
-    }
-
-    public function render($suggestions, $variables = [])
-    {
-        $template = $this->findTemplate($suggestions);
-        $output = '';
-        if ($template) {
-            $output = $this->renderTemplate($template, $variables);
-        }
-        return $output;
-    }
-
-    public function findTemplate($suggestions)
-    {
-        if (!is_array($suggestions)) {
-            $suggestions = array($suggestions);
-        }
-        $suggestions = array_reverse($suggestions);
-        $found = false;
-        foreach ($suggestions as $suggestion) {
-            $file = "{$this->folder}/{$suggestion}.php";
-            if (file_exists($file)) {
-                $found = $file;
-                break;
-            }
-        }
-        return $found;
-    }
-
-    public function renderTemplate()
-    {
-        ob_start();
-        foreach (func_get_args()[1] as $key => $value) {
-            ${$key} = $value;
-        }
-        include func_get_args()[0];
-        return ob_get_clean();
+        return $this->twig->render($suggestions . '.twig', $variables);
     }
 }
