@@ -5,6 +5,7 @@ namespace App\Components;
 use App\Controller\ConverterController;
 use App\Controller\HistoryController;
 use App\Controller\MainController;
+use App\Controller\NotFoundController;
 use App\Controller\SettingController;
 use App\Controller\SettingSaveController;
 use FastRoute\Dispatcher;
@@ -36,6 +37,7 @@ class Router
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
+                $handler = NotFoundController::class;
                 break;
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
