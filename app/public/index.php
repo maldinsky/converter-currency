@@ -16,13 +16,7 @@ $dotenv = Dotenv::create(__DIR__ . '/../');
 $dotenv->load();
 $dotenv->required(['DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD']);
 
-$request = ServerRequestFactory::fromGlobals(
-    $_SERVER,
-    $_GET,
-    $_POST,
-    $_COOKIE,
-    $_FILES
-);
+$request = ServerRequestFactory::fromGlobals();
 
 $session = new Session();
 $session->start();
@@ -32,17 +26,15 @@ $action = $router->match($request);
 
 $providers[] = new KeyValue([
     TemplateRender::class => new TemplateRender(__DIR__ . '/../templates'),
-    PDO::class => new PDO(
-        'mysql:host='. getenv('DB_HOST') . ';port=' . getenv('DB_PORT') . ';dbname=' . getenv('DB_DATABASE'),
-        getenv('DB_USERNAME'),
-        getenv('DB_PASSWORD'),
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-        ]
-    ),
+    'dsn' => 'mysql:host='. getenv('DB_HOST') . ';port=' . getenv('DB_PORT') . ';dbname=' . getenv('DB_DATABASE'),
+    'username' => getenv('DB_USERNAME'),
+    'passwd' => getenv('DB_PASSWORD'),
+    'options' => [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+    ],
     'codeVisitor' => $session->getId(),
     'apiKeyConverter' => getenv('API_KEY_CONVERTER')
 ]);
